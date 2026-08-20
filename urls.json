@@ -1,0 +1,46 @@
+{
+  "urls": [
+    {
+      "code": "blog",
+      "url": "https://blog.crii.me",
+      "title": "Blog",
+      "created": "2026-08-20",
+      "clicks": 0
+    },
+    {
+      "code": "github",
+      "url": "https://github.com/giocoliere",
+      "title": "GitHub",
+      "created": "2026-08-20",
+      "clicks": 0
+    },
+    {
+      "code": "twitter",
+      "url": "https://x.com/giocolieredev",
+      "title": "Twitter / X",
+      "created": "2026-08-20",
+      "clicks": 0
+    },
+    {
+      "code": "instagram",
+      "url": "https://instagram.com/crii.mp3",
+      "title": "Instagram",
+      "created": "2026-08-20",
+      "clicks": 0
+    },
+    {
+      "code": "discord",
+      "url": "https://crii.me/discord",
+      "title": "Discord",
+      "created": "2026-08-20",
+      "clicks": 0
+    },
+    {
+      "code": "status",
+      "url": "https://status.crii.me",
+      "title": "System Status",
+      "created": "2026-08-20",
+      "clicks": 0
+    }
+  ]
+}

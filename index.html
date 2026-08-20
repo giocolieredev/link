@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>link.crii.me — URL Shortener</title>
+  <meta name="description" content="Short links for crii.me — quick access to all services.">
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23FF6B00'/><text x='4' y='24' font-family='monospace' font-size='20' font-weight='900' fill='white'>C</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --orange: #FF6B00;
+      --orange-d: #CC5500;
+      --orange-l: #FF8C33;
+      --black: #0A0A0A;
+      --gray-900: #111111;
+      --gray-800: #1A1A1A;
+      --gray-700: #2A2A2A;
+      --gray-600: #3A3A3A;
+      --gray-500: #6A6A6A;
+      --gray-400: #9A9A9A;
+      --gray-300: #C0C0C0;
+      --white: #FAFAFA;
+      --green: #22c55e;
+      --font-head: 'Space Grotesk', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+      --speed: 0.15s;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-head);
+      background: var(--black);
+      color: var(--white);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .scanlines {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px,
+        rgba(255,255,255,0.008) 2px, rgba(255,255,255,0.008) 4px);
+    }
+
+    /* ── Header ── */
+    .header {
+      background: var(--gray-900);
+      border-bottom: 3px solid var(--orange);
+      padding: 32px;
+      text-align: center;
+    }
+
+    .logo {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: clamp(1.5rem, 4vw, 2.2rem);
+      margin-bottom: 8px;
+    }
+
+    .logo span { color: var(--orange); }
+
+    .subtitle {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--gray-400);
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    /* ── Section Header ── */
+    .section-header {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gray-400);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-header::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--gray-700);
+    }
+
+    /* ── Link Cards ── */
+    .links { margin-bottom: 48px; }
+
+    .link-card {
+      background: var(--gray-800);
+      border: 1px solid var(--gray-700);
+      padding: 16px 20px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: border-color var(--speed), transform var(--speed);
+    }
+    .link-card:hover {
+      border-color: var(--orange);
+      transform: translateX(4px);
+    }
+
+    .link-info { flex: 1; min-width: 0; }
+
+    .link-title {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    .link-short {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--orange);
+    }
+
+    .link-target {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .link-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border: 2px solid var(--gray-600);
+      background: var(--gray-700);
+      color: var(--gray-400);
+      cursor: pointer;
+      transition: all var(--speed);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .btn:hover {
+      background: var(--orange);
+      color: var(--black);
+      border-color: var(--orange);
+    }
+    .btn.copied {
+      background: var(--green);
+      color: var(--black);
+      border-color: var(--green);
+    }
+
+    /* ── Usage ── */
+    .usage {
+      background: var(--gray-800);
+      border: 1px solid var(--gray-700);
+      padding: 24px;
+      margin-bottom: 48px;
+    }
+
+    .usage-title {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      color: var(--orange);
+    }
+
+    .usage code {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: var(--gray-700);
+      padding: 2px 6px;
+      color: var(--orange-l);
+    }
+
+    .usage p {
+      font-size: 0.85rem;
+      color: var(--gray-400);
+      margin-bottom: 8px;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      border-top: 2px solid var(--gray-700);
+      padding: 24px 32px;
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--gray-500);
+    }
+    .footer a { color: var(--orange); text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── Loading ── */
+    .loading {
+      text-align: center;
+      padding: 60px 24px;
+      font-family: var(--font-mono);
+      color: var(--gray-400);
+    }
+    .spinner {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--gray-600);
+      border-top-color: var(--orange);
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .container { padding: 16px; }
+      .link-card { flex-direction: column; align-items: flex-start; }
+      .link-actions { width: 100%; }
+      .btn { flex: 1; justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="scanlines" aria-hidden="true"></div>
+
+  <header class="header">
+    <div class="logo"><span>link</span>.crii.me</div>
+    <div class="subtitle">Short links for the crii.me ecosystem</div>
+  </header>
+
+  <main class="container">
+    <div class="usage">
+      <div class="usage-title">How to use</div>
+      <p>Short URL format: <code>link.crii.me/#&lt;code&gt;</code></p>
+      <p>Example: <code>link.crii.me/#blog</code> → redirects to the blog</p>
+      <p>To add a link: edit <code>urls.json</code> in the repo and push.</p>
+    </div>
+
+    <div class="links">
+      <div class="section-header">All Links</div>
+      <div id="link-list">
+        <div class="loading">
+          <div class="spinner"></div>
+          <div>Loading links…</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <a href="https://crii.me">crii.me</a> ·
+    <a href="https://blog.crii.me">blog</a> ·
+    <a href="https://cdn.crii.me">cdn</a> ·
+    <a href="https://status.crii.me">status</a> ·
+    <a href="https://bio.crii.me">bio</a> ·
+    <a href="https://github.com/giocolieredev/link">source</a>
+  </footer>
+
+  <script>
+    const JSON_URL = 'https://raw.githubusercontent.com/giocolieredev/link/main/urls.json';
+    const BASE_URL = 'https://link.crii.me/#';
+
+    async function loadLinks() {
+      try {
+        const res = await fetch(JSON_URL + '?t=' + Date.now());
+        if (!res.ok) throw new Error('Failed to load');
+        const data = await res.json();
+        renderLinks(data.urls || []);
+      } catch (err) {
+        document.getElementById('link-list').innerHTML = `
+          <div class="loading" style="color:var(--red)">
+            ⚠️ Failed to load links
+          </div>`;
+      }
+    }
+
+    function renderLinks(urls) {
+      const el = document.getElementById('link-list');
+      if (urls.length === 0) {
+        el.innerHTML = '<div class="loading">No links yet</div>';
+        return;
+      }
+
+      let html = '';
+      urls.forEach(u => {
+        const shortUrl = BASE_URL + u.code;
+        html += `
+          <div class="link-card">
+            <div class="link-info">
+              <div class="link-title">${u.title || u.code}</div>
+              <div class="link-short">${shortUrl}</div>
+              <div class="link-target">${u.url}</div>
+            </div>
+            <div class="link-actions">
+              <button class="btn" onclick="copyUrl('${shortUrl}', this)">Copy</button>
+              <a class="btn" href="${u.url}" target="_blank" rel="noopener">Open</a>
+            </div>
+          </div>`;
+      });
+      el.innerHTML = html;
+    }
+
+    function copyUrl(url, btn) {
+      navigator.clipboard.writeText(url).then(() => {
+        btn.textContent = '✓ Copied';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = 'Copy';
+          btn.classList.remove('copied');
+        }, 2000);
+      });
+    }
+
+    // Handle hash redirect
+    (async function () {
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        try {
+          const res = await fetch(JSON_URL);
+          const data = await res.json();
+          const match = (data.urls || []).find(u => u.code === hash);
+          if (match) {
+            // Increment click count (client-side only)
+            window.location.replace(match.url);
+            return;
+          }
+        } catch (e) { }
+        // If code not found, show 404-like message
+        document.getElementById('link-list').innerHTML = `
+          <div class="loading">
+            <div style="font-size:2rem;margin-bottom:12px">🔗</div>
+            <div>Link "<code>${hash}</code>" not found</div>
+            <a href="/" style="color:var(--orange);margin-top:12px;display:inline-block">← View all links</a>
+          </div>`;
+      } else {
+        loadLinks();
+      }
+    })();
+  </script>
+</body>
+
+</html>
