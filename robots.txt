@@ -1,0 +1,9 @@
+# ════════════════════════════════════════════
+# robots.txt — link.crii.me
+# ════════════════════════════════════════════
+
+User-agent: *
+Allow: /
+
+# ── Sitemaps ──────────────────────────────
+Sitemap: https://link.crii.me/sitemap.xml
